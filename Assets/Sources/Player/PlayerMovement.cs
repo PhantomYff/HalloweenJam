@@ -16,12 +16,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _maxJumpContinuation;
     [SerializeField] private float _jumpContinuationStrength;
 
-    [Header("Wall Check")]
-    [SerializeField] private float _wallCheckDistance;
-    [SerializeField] private LayerMask _wallCheckLayers;
-    [SerializeField] private Transform _wallCheckPointsParent;
-    [SerializeField] private Transform[] _wallCheckPoints;
-
     [Header("Ground Check")]
     [SerializeField] private float _groundCheckDistance;
     [SerializeField] private LayerMask _groundCheckLayers;
@@ -45,8 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (CanPassToMovementDirection())
-            Move();
+        Move();
 
         if (CheckForGround())
         {
@@ -64,26 +57,6 @@ public class PlayerMovement : MonoBehaviour
             Vector2 movement = _speed * Time.fixedDeltaTime * _input.Direction;
             _rigidbody.SetVelocityX(movement.x);
             _rigidbody.SetVelocityZ(movement.y);
-        }
-    }
-
-    private bool CanPassToMovementDirection()
-    {
-        if (_input.Direction == Vector2.zero)
-            return true;
-
-        var movementDirection = new Vector3
-        {
-            x = _input.Direction.x,
-            z = _input.Direction.y
-        };
-
-        _wallCheckPointsParent.rotation = Quaternion.FromToRotation(Vector3.zero, movementDirection);
-        return _groundCheckPoints.Any(LooksAtTheWall) == false;
-
-        bool LooksAtTheWall(Transform point)
-        {
-            return Physics.Raycast(point.position, movementDirection, _wallCheckDistance, _wallCheckLayers);
         }
     }
 

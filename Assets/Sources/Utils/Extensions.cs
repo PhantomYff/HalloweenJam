@@ -32,4 +32,9 @@ public static class Extensions
         Coroutine coroutine = monoBehaviour.StartCoroutine(routine);
         return new DelegateDisposableAdapter(() => monoBehaviour.StopCoroutine(coroutine));
     }
+
+    public static Vector3 YToZ(this Vector2 origin)
+    {
+        return new Vector3(origin.x, 0f, origin.y);
+    }
 }
