@@ -1271,6 +1271,7 @@ GameObject:
   - component: {fileID: 1789166412}
   - component: {fileID: 1789166411}
   - component: {fileID: 1789166408}
+  - component: {fileID: 1789166413}
   - component: {fileID: 1789166409}
   m_Layer: 6
   m_Name: Player
@@ -1347,6 +1348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _jumpKeys: 20000000
+  _interractionKeys: 6600000065000000
   _jumpBufferSeconds: 0.1
 --- !u!54 &1789166411
 Rigidbody:
@@ -1398,6 +1400,23 @@ CapsuleCollider:
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1789166413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789166403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 892f2fbe32f1e1a4d9e81d3388a29763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _input: {fileID: 1789166409}
+  _interractionRadius: 1
+  _mask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &1852422569
 GameObject:
   m_ObjectHideFlags: 0
