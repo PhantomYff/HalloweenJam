@@ -1,4 +1,4 @@
 public interface IInterractable
 {
-    public void Interract();
+    public void Interract(PlayerInventory inventory);
 }

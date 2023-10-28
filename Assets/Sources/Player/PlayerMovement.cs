@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,6 +26,23 @@ public class PlayerMovement : MonoBehaviour
     private bool _toContinueJump;
 
     private IDisposable _coyoteTimeCoroutine;
+
+    private IGameLoop _gameLoop;
+    private ISave<Vector3> _respawnPoint;
+
+    [Inject]
+    private void Construct(IGameLoop gameLoop)
+    {
+        _gameLoop = gameLoop;
+        _gameLoop.Restarted += OnRestart;
+
+        _respawnPoint = CreateSave.Vector3("RespawnPoint", transform.position);
+    }
+
+    public void SetRespawnPoint(Vector3 point)
+    {
+        _respawnPoint.Value = point;
+    }
 
     private void Update()
     {
@@ -88,6 +106,16 @@ public class PlayerMovement : MonoBehaviour
     {
         return _groundCheckPoints
             .Any(x => Physics.Raycast(x.position, Vector3.down, _groundCheckDistance, _groundCheckLayers));
+    }
+
+    private void OnRestart()
+    {
+        transform.position = _respawnPoint.Value;
+    }
+
+    private void OnDestroy()
+    {
+        _gameLoop.Restarted -= OnRestart;
     }
 
     private void OnDrawGizmos()

@@ -4,13 +4,14 @@ using UnityEngine;
 public class PlayerInterraction : MonoBehaviour
 {   
     [SerializeField] private PlayerInput _input;
+    [SerializeField] private PlayerInventory _inventory;
     [SerializeField] private float _interractionRadius = 1;
     [SerializeField] private LayerMask _mask;
-    private Collider[] _colliders;
+
+    private readonly Collider[] _colliders = new Collider[4];
 
     private void Update()
     {
-        UpdateColliders();
         if (_input.IsInterractionPressed)
         {
             TryInterract();
@@ -19,20 +20,17 @@ public class PlayerInterraction : MonoBehaviour
 
     private void TryInterract()
     {
-        if (_colliders.Length == 0) return;
+        int length = Physics.OverlapSphereNonAlloc(transform.position, _interractionRadius, _colliders, _mask);
 
-        if (_colliders[0].TryGetComponent<IInterractable>(out IInterractable interractable))
+        for (int i = 0; i < length; i++)
         {
-            interractable.Interract();
+            if (_colliders[i].TryGetComponent(out IInterractable interractable))
+            {
+                interractable.Interract(_inventory);
+            }
+            else throw new Exception($"Объект \"{_colliders[i].name}\" находиться на слое \"Interractables\", но не реализует \"IInterractable\"!");
         }
-        else throw new Exception("Все обьекты на слое \"Interractables\" должны реализовывать \"IInterractable\"!");
     }
-    
-    private void UpdateColliders()
-    {
-        _colliders = Physics.OverlapSphere(transform.position, _interractionRadius, _mask); 
-
-    }    
 
     private void OnDrawGizmos()
     {
