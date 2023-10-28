@@ -19,6 +19,6 @@ public class KeyOpenableGate : ItemInteractable
 
     public override void InteractNoItem()
     {
-        textDisplay.Display("Мне нужен ключ.");
+        textDisplay.Display("Мне нужен ключ");
     }
 }

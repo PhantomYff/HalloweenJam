@@ -6,6 +6,9 @@ using Zenject;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public event Action Jumped;
+    public event Action Landed;
+
     [SerializeField] private PlayerInput _input;
     [SerializeField] private Rigidbody _rigidbody;
 
@@ -51,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.SetVelocityY(_jumpStrength);
             _isOnGround = false;
 
+            Jumped?.Invoke();
             this.Coroutine(ContinueJump());
         }
     }
@@ -59,7 +63,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
 
-        if (CheckForGround())
+        bool isOnGroundNow = CheckForGround();
+
+        if (isOnGroundNow && _isOnGround == false)
+        {
+            Landed?.Invoke();
+        }
+
+        if (isOnGroundNow)
         {
             _coyoteTimeCoroutine?.Dispose();
             _coyoteTimeCoroutine = this.Coroutine(CoyoteTime());
