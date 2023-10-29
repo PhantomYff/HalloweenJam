@@ -7,6 +7,7 @@ public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private KeyCode[] _jumpKeys;
     [SerializeField] private KeyCode[] _interractionKeys;
+    [SerializeField] private KeyCode[] _shootKeys;
     [SerializeField] private float _jumpBufferSeconds;
 
     private IDisposable _jumpBufferCoroutine;
@@ -14,14 +15,15 @@ public class PlayerInput : MonoBehaviour
     public Vector2 Direction { get; private set; }
     public bool ToJump { get; private set; }
     public bool IsJumpHolding { get; private set; }
+    public bool IsShootButtonPressed { get; private set; }
     public bool IsInterractionPressed { get; private set; }
-
 
     private void Update()
     {
         CalculateDirection();
         CalculateJump();
         CalculateInterractions();
+        CalculateShooting();
     }
 
     private void CalculateDirection()
@@ -48,16 +50,12 @@ public class PlayerInput : MonoBehaviour
 
     private void CalculateInterractions()
     {
-        bool interractionPressed = _interractionKeys.Any(x => Input.GetKeyDown(x));
-        
-        if (interractionPressed)
-        {
-            IsInterractionPressed = true;
-        }
-        else
-        {
-            IsInterractionPressed = false;
-        }
+        IsInterractionPressed = _interractionKeys.Any(x => Input.GetKeyDown(x));
+    }
+
+    private void CalculateShooting()
+    {
+        IsShootButtonPressed = _shootKeys.Any(x => Input.GetKeyDown(x));
     }
 
     private IEnumerator JumpBuffer()

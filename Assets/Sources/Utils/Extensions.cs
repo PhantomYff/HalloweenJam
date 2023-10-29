@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.UI;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class Extensions
@@ -31,6 +33,17 @@ public static class Extensions
     {
         Coroutine coroutine = monoBehaviour.StartCoroutine(routine);
         return new DelegateDisposableAdapter(() => monoBehaviour.StopCoroutine(coroutine));
+    }
+
+    public static IDisposable InvokeDelayed(this MonoBehaviour monoBehaviour, Action action, float secondsDelay)
+    {
+        return monoBehaviour.Coroutine(InvokeDelayed_Internal());
+
+        IEnumerator InvokeDelayed_Internal()
+        {
+            yield return new WaitForSeconds(secondsDelay);
+            action.Invoke();
+        }
     }
 
     public static Vector3 YToZ(this Vector2 origin)

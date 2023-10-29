@@ -2,9 +2,13 @@ using System;
 using System.Linq;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public event Action Jumped;
+    public event Action Landed;
+
     [SerializeField] private PlayerInput _input;
     [SerializeField] private Rigidbody _rigidbody;
 
@@ -26,6 +30,23 @@ public class PlayerMovement : MonoBehaviour
 
     private IDisposable _coyoteTimeCoroutine;
 
+    private IGameLoop _gameLoop;
+    private ISave<Vector3> _respawnPoint;
+
+    [Inject]
+    private void Construct(IGameLoop gameLoop)
+    {
+        _gameLoop = gameLoop;
+        _gameLoop.Restarted += OnRestart;
+
+        _respawnPoint = CreateSave.Vector3("RespawnPoint", transform.position);
+    }
+
+    public void SetRespawnPoint(Vector3 point)
+    {
+        _respawnPoint.Value = point;
+    }
+
     private void Update()
     {
         if (_isOnGround && _input.ToJump)
@@ -33,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.SetVelocityY(_jumpStrength);
             _isOnGround = false;
 
+            Jumped?.Invoke();
             this.Coroutine(ContinueJump());
         }
     }
@@ -41,7 +63,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
 
-        if (CheckForGround())
+        bool isOnGroundNow = CheckForGround();
+
+        if (isOnGroundNow && _isOnGround == false)
+        {
+            Landed?.Invoke();
+        }
+
+        if (isOnGroundNow)
         {
             _coyoteTimeCoroutine?.Dispose();
             _coyoteTimeCoroutine = this.Coroutine(CoyoteTime());
@@ -88,6 +117,16 @@ public class PlayerMovement : MonoBehaviour
     {
         return _groundCheckPoints
             .Any(x => Physics.Raycast(x.position, Vector3.down, _groundCheckDistance, _groundCheckLayers));
+    }
+
+    private void OnRestart()
+    {
+        transform.position = _respawnPoint.Value;
+    }
+
+    private void OnDestroy()
+    {
+        _gameLoop.Restarted -= OnRestart;
     }
 
     private void OnDrawGizmos()
