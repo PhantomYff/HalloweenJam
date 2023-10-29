@@ -11,7 +11,7 @@ public class AmbientAudio : MonoBehaviour, IAmbientAudio
 
     private IDisposable _playCoroutine;
 
-    public void SetClips(Clip[] clips)
+    public void SetClips(params Clip[] clips)
     {
         StartCoroutine(SetClips_Internal());
 

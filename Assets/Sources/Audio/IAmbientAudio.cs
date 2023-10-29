@@ -1,4 +1,4 @@
 ﻿public interface IAmbientAudio
 {
-    void SetClips(Clip[] clips);
+    void SetClips(params Clip[] clips);
 }
