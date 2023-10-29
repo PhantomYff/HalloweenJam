@@ -32,12 +32,14 @@ public class PlayerView : MonoBehaviour
 
     private void OnJump()
     {
-        _jumpSound?.Play();
+        if (_jumpSound)
+            _jumpSound.Play();
     }
 
     private void OnLand()
     {
-        _landSound?.Play();
+        if (_landSound)
+            _landSound.Play();
     }
 
     private void OnDestroy()

@@ -9,7 +9,7 @@ public class TouchButton : MonoBehaviour, IInterractable
     
     public event Action OnPressed;
 
-    public void Interract()
+    public void Interract(PlayerInventory inventory)
     {
         OnPressed?.Invoke();
 

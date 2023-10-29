@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using ModestTree;
+using System.Linq;
 
 public class AmbientAudio : MonoBehaviour, IAmbientAudio
 {
@@ -43,6 +45,9 @@ public class AmbientAudio : MonoBehaviour, IAmbientAudio
 
                 yield return new WaitForSeconds(clip.Audio.length);
             }
+
+            if (_clips.IsEmpty())
+                yield return new WaitUntil(() => _clips.Any());
         }
     }
 }

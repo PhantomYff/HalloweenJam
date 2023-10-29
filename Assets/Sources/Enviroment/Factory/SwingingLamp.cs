@@ -27,14 +27,14 @@ public class SwingingLamp : MonoBehaviour
         float elapsedTime = 0;
         while (true)
         {
-            transform.rotation = Quaternion.Euler(_swingCurve.Evaluate(elapsedTime), -90, -90);
+            transform.rotation = Quaternion.Euler(_swingCurve.Evaluate(elapsedTime), -90f, -90f);
 
             elapsedTime += Time.deltaTime;
 
             yield return null;
         }
     }
-    
+
     private IEnumerator BlinkCoroutine()
     {
         float elapsedTime = 0;
@@ -50,5 +50,9 @@ public class SwingingLamp : MonoBehaviour
 
         _light.intensity = 0;
     }
-}
 
+    private void OnDestroy()
+    {
+        _triggerEvents.OnTriggerEntered -= StartBlinking;
+    }
+}
